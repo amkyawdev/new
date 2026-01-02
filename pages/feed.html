@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Feed - BurmeWeb</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/theme.css">
+    <link rel="stylesheet" href="../assets/css/mobile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="../index.html" class="logo">
+                    <img src="../assets/img/logo.png" alt="BurmeWeb Logo">
+                    <span>BurmeWeb</span>
+                </a>
+            </div>
+            
+            <div class="navbar-menu">
+                <a href="feed.html" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Feed</span>
+                </a>
+                <a href="chat.html" class="nav-link">
+                    <i class="fas fa-comment"></i>
+                    <span>Chat</span>
+                </a>
+                <a href="group.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Groups</span>
+                </a>
+                
+                <!-- User Menu -->
+                <div class="user-menu-container" id="userMenu">
+                    <!-- Filled by JavaScript -->
+                </div>
+                
+                <!-- Theme Toggle -->
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="feed.html" class="mobile-nav-link active">
+                <i class="fas fa-home"></i> Feed
+            </a>
+            <a href="chat.html" class="mobile-nav-link">
+                <i class="fas fa-comment"></i> Chat
+            </a>
+            <a href="group.html" class="mobile-nav-link">
+                <i class="fas fa-users"></i> Groups
+            </a>
+            <a href="profile.html" class="mobile-nav-link">
+                <i class="fas fa-user"></i> Profile
+            </a>
+            <div class="mobile-menu-divider"></div>
+            <button class="mobile-nav-link theme-toggle-mobile" id="themeToggleMobile">
+                <i class="fas fa-moon"></i> Dark Mode
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="feed-container">
+        <div class="container">
+            <div class="feed-layout">
+                <!-- Left Sidebar -->
+                <aside class="feed-sidebar left-sidebar">
+                    <div class="sidebar-card">
+                        <div class="user-profile-card">
+                            <div class="user-avatar-large">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar" id="userAvatar">
+                                <span class="online-status" id="onlineStatus"></span>
+                            </div>
+                            <h3 id="userDisplayName">Mg Mg</h3>
+                            <p class="user-bio" id="userBio">Software developer from Yangon</p>
+                            <a href="profile.html" class="btn btn-outline btn-block">View Profile</a>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <h4>Trending Hashtags</h4>
+                        <div class="hashtag-list">
+                            <a href="#" class="hashtag">#Myanmar</a>
+                            <a href="#" class="hashtag">#Yangon</a>
+                            <a href="#" class="hashtag">#TechMyanmar</a>
+                            <a href="#" class="hashtag">#BurmeseFood</a>
+                            <a href="#" class="hashtag">#TravelMyanmar</a>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <h4>Online Friends</h4>
+                        <div class="friends-list">
+                            <div class="friend-item">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Su Su" class="friend-avatar">
+                                <div class="friend-info">
+                                    <span class="friend-name">Su Su</span>
+                                    <span class="friend-status online">Online</span>
+                                </div>
+                            </div>
+                            <div class="friend-item">
+                                <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Htet Aung" class="friend-avatar">
+                                <div class="friend-info">
+                                    <span class="friend-name">Htet Aung</span>
+                                    <span class="friend-status online">Online</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+                
+                <!-- Main Feed -->
+                <div class="feed-main">
+                    <!-- Create Post -->
+                    <div class="create-post-card card">
+                        <div class="create-post-header">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Your Avatar" class="post-avatar">
+                            <textarea 
+                                id="postContent" 
+                                class="post-input" 
+                                placeholder="What's on your mind?" 
+                                rows="3"
+                            ></textarea>
+                        </div>
+                        <div class="create-post-actions">
+                            <div class="post-options">
+                                <button class="post-option" data-type="photo">
+                                    <i class="fas fa-image"></i> Photo
+                                </button>
+                                <button class="post-option" data-type="video">
+                                    <i class="fas fa-video"></i> Video
+                                </button>
+                                <button class="post-option" data-type="poll">
+                                    <i class="fas fa-chart-bar"></i> Poll
+                                </button>
+                            </div>
+                            <button id="postButton" class="btn btn-primary">Post</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Feed Filter -->
+                    <div class="feed-filter">
+                        <button class="filter-btn active">For You</button>
+                        <button class="filter-btn">Following</button>
+                        <button class="filter-btn">Trending</button>
+                        <button class="filter-btn">Local</button>
+                    </div>
+                    
+                    <!-- Posts -->
+                    <div id="postsContainer" class="posts-container">
+                        <!-- Posts will be loaded here -->
+                    </div>
+                    
+                    <!-- Loading Indicator -->
+                    <div id="loadingIndicator" class="loading-indicator">
+                        <div class="spinner"></div>
+                        <span>Loading posts...</span>
+                    </div>
+                </div>
+                
+                <!-- Right Sidebar -->
+                <aside class="feed-sidebar right-sidebar">
+                    <div class="sidebar-card">
+                        <h4>Suggested Groups</h4>
+                        <div class="group-list">
+                            <div class="group-item">
+                                <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                                     alt="Yangon Tech Community" class="group-
