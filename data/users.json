@@ -1,0 +1,43 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "mgmg",
+      "email": "mgmg@example.com",
+      "displayName": "Mg Mg",
+      "profileImage": "https://randomuser.me/api/portraits/men/32.jpg",
+      "bio": "Software developer from Yangon",
+      "location": "Yangon, Myanmar",
+      "joinedDate": "2023-01-15",
+      "friends": ["2", "3"],
+      "groups": ["1", "2"],
+      "isOnline": true
+    },
+    {
+      "id": "2",
+      "username": "susu",
+      "email": "susu@example.com",
+      "displayName": "Su Su",
+      "profileImage": "https://randomuser.me/api/portraits/women/44.jpg",
+      "bio": "Teacher and community volunteer",
+      "location": "Mandalay, Myanmar",
+      "joinedDate": "2023-02-20",
+      "friends": ["1", "3"],
+      "groups": ["1"],
+      "isOnline": false
+    },
+    {
+      "id": "3",
+      "username": "htetaung",
+      "email": "htetaung@example.com",
+      "displayName": "Htet Aung",
+      "profileImage": "https://randomuser.me/api/portraits/men/67.jpg",
+      "bio": "Business owner and entrepreneur",
+      "location": "Naypyidaw, Myanmar",
+      "joinedDate": "2023-03-10",
+      "friends": ["1", "2"],
+      "groups": ["2"],
+      "isOnline": true
+    }
+  ]
+}
