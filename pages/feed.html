@@ -4,13 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News Feed - BurmeWeb</title>
+    
+    <!-- CSS Files -->
     <link rel="stylesheet" href="../assets/css/base.css">
     <link rel="stylesheet" href="../assets/css/layout.css">
     <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/theme.css">
     <link rel="stylesheet" href="../assets/css/mobile.css">
+    <link rel="stylesheet" href="../assets/css/feed.css">
+    
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../assets/img/logo.png">
 </head>
 <body>
     <!-- Navigation -->
@@ -110,20 +118,7 @@
                     <div class="sidebar-card">
                         <h4>Online Friends</h4>
                         <div class="friends-list">
-                            <div class="friend-item">
-                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Su Su" class="friend-avatar">
-                                <div class="friend-info">
-                                    <span class="friend-name">Su Su</span>
-                                    <span class="friend-status online">Online</span>
-                                </div>
-                            </div>
-                            <div class="friend-item">
-                                <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Htet Aung" class="friend-avatar">
-                                <div class="friend-info">
-                                    <span class="friend-name">Htet Aung</span>
-                                    <span class="friend-status online">Online</span>
-                                </div>
-                            </div>
+                            <!-- Friends will be loaded here -->
                         </div>
                     </div>
                 </aside>
@@ -133,7 +128,7 @@
                     <!-- Create Post -->
                     <div class="create-post-card card">
                         <div class="create-post-header">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Your Avatar" class="post-avatar">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Your Avatar" class="post-avatar" id="currentUserAvatar">
                             <textarea 
                                 id="postContent" 
                                 class="post-input" 
@@ -159,10 +154,10 @@
                     
                     <!-- Feed Filter -->
                     <div class="feed-filter">
-                        <button class="filter-btn active">For You</button>
-                        <button class="filter-btn">Following</button>
-                        <button class="filter-btn">Trending</button>
-                        <button class="filter-btn">Local</button>
+                        <button class="filter-btn active" data-filter="all">For You</button>
+                        <button class="filter-btn" data-filter="following">Following</button>
+                        <button class="filter-btn" data-filter="trending">Trending</button>
+                        <button class="filter-btn" data-filter="local">Local</button>
                     </div>
                     
                     <!-- Posts -->
@@ -175,13 +170,51 @@
                         <div class="spinner"></div>
                         <span>Loading posts...</span>
                     </div>
+                    
+                    <!-- Load More Button -->
+                    <div id="loadMoreContainer" class="load-more-container">
+                        <button id="loadMoreBtn" class="btn btn-outline btn-block">Load More Posts</button>
+                    </div>
                 </div>
                 
                 <!-- Right Sidebar -->
                 <aside class="feed-sidebar right-sidebar">
                     <div class="sidebar-card">
                         <h4>Suggested Groups</h4>
-                        <div class="group-list">
-                            <div class="group-item">
-                                <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
-                                     alt="Yangon Tech Community" class="group-
+                        <div class="group-list" id="suggestedGroups">
+                            <!-- Groups will be loaded here -->
+                        </div>
+                        <a href="group.html" class="btn btn-link btn-block">See all groups</a>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <h4>Upcoming Events</h4>
+                        <div class="events-list" id="upcomingEvents">
+                            <!-- Events will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <div class="advertisement">
+                            <small>Advertisement</small>
+                            <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" 
+                                 alt="Advertisement" class="ad-image">
+                            <p class="ad-text">Start your business today with our easy-to-use platform!</p>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="../config/app.config.js"></script>
+    <script src="../assets/js/app.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/feed.js"></script>
+    <script src="../assets/js/ui.js"></script>
+</body>
+                        </html>
