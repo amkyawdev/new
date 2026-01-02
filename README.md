@@ -1,119 +1,28 @@
-# Aung Myo Kyaw – Personal and Social Website
+# BurmeWeb - Myanmar Social Network
 
-> A fully responsive personal and social website built with HTML, CSS, and JavaScript, hosted on GitHub Pages.
+![BurmeWeb Logo](assets/img/logo.png)
 
----
+A modern social networking platform built specifically for Myanmar users with real-time chat, groups, and community features.
 
-## 🔹 Project Overview
+## Features
 
-This project is a **personal and social platform** that allows users to:
+- **Real-time Chat**: Instant messaging with friends and groups
+- **News Feed**: Share and discover posts from your community
+- **Groups & Communities**: Join or create interest-based groups
+- **User Profiles**: Customizable profiles with Myanmar language support
+- **Admin Panel**: Content moderation and user management
+- **Dark/Light Mode**: Choose your preferred theme
+- **Responsive Design**: Works on all devices
 
-- Login and register
-- View a newsfeed with posts
-- Chat with friends (personal and group chat)
-- Access user profiles
-- Admin overview and About page
+## Live Demo
 
-The website is **mobile-first and responsive**, designed to work seamlessly on both desktop and mobile devices. It is also prepared for future integration with Firebase and MongoDB for real-time data handling.
+Visit: [https://burmeweb.github.io](https://burmeweb.github.io/new)
 
----
+## Installation
 
-## 🔹 Features
+### Option 1: Local Development
 
-### Core Features
-- Beautiful login and registration forms
-- Interactive newsfeed with post cards
-- Personal and group chat (UI ready)
-- Admin panel for managing users and content
-- Responsive layout for mobile and desktop
-- Simple JavaScript logic for interactivity
-- Easy to extend with Firebase or other backend APIs
-
-### Future Features
-- Real-time messaging using Firebase Realtime Database
-- User authentication and role management
-- Image and media posts
-- Notifications and alerts
-
----
-
-## 🔹 Project Structure
-```
-burmeweb.github.io/
-│
-├── index.html                 # Landing / Home / Login page
-├── README.md                  # Project description, setup, screenshots
-│
-├── pages/                     # Secondary pages
-│   ├── login.html
-│   ├── register.html
-│   ├── feed.html
-│   ├── chat.html
-│   ├── group.html
-│   ├── profile.html
-│   ├── admin.html
-│   └── about.html
-│
-├── assets/                    # All static assets
-│   ├── css/
-│   │   ├── base.css           # Reset and global styles
-│   │   ├── layout.css         # Sidebar, navbar, grid
-│   │   ├── components.css     # Buttons, cards, forms
-│   │   ├── theme.css          # Colors, dark/light mode
-│   │   └── mobile.css         # Responsive media queries
-│   │
-│   ├── js/
-│   │   ├── app.js             # App initialization
-│   │   ├── auth.js            # Login/Register logic
-│   │   ├── feed.js            # Newsfeed logic
-│   │   ├── chat.js            # Personal chat logic
-│   │   ├── group.js           # Group chat logic
-│   │   ├── admin.js           # Admin panel logic
-│   │   ├── ui.js              # UI interactions / DOM updates
-│   │   └── storage.js         # LocalStorage / mock data / future API
-│   │
-│   ├── img/
-│   │   ├── logo.png
-│   │   └── icons/             # SVGs / PNGs for UI
-│   │
-│   └── fonts/                  # Custom fonts
-│
-├── data/                       # Mock / JSON data
-│   ├── users.json
-│   ├── posts.json
-│   ├── chats.json
-│   └── groups.json
-│
-└── config/
-    └── app.config.js           # App-wide constants / API keys / endpoints
-```
-
-## 🔹 Installation / Setup
-
-1. Clone or download this repository:
-
+1. Clone the repository:
 ```bash
 git clone https://github.com/burmeweb/burmeweb.github.io.git
-Open index.html in your browser.
-The site is ready to deploy on GitHub Pages.
-For live updates, push changes to the main branch.
-🔹 Technologies Used
-Frontend: HTML5, CSS3, JavaScript (Vanilla)
-Responsive Design: Mobile-first layout, CSS Flexbox & Grid
-Future Backend Integration: Firebase Authentication, Firebase Realtime Database, MongoDB
-Deployment: GitHub Pages
-🔹 Screenshots
-�
-�
-�
-(Add screenshots as you develop)
-🔹 Author
-Aung Myo Kyaw
-Personal and Social Website Developer
-Email: aung.thuyrain.at449@gmail.com
-Phone: 09677740154
-🔹 License
-This project is open-source and free to use.
-Copy code
-
----
+cd burmeweb.github.io
