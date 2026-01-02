@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aung Myo Kyaw</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile.css">
+</head>
+<body>
+  <header>
+    <img src="assets/img/logo.png" alt="Logo" class="logo">
+    <h1>Aung Myo Kyaw</h1>
+    <p>Personal and Social Website</p>
+  </header>
+
+  <main>
+    <section id="login-section">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input type="text" placeholder="Username" required>
+        <input type="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+    </section>
+
+    <section id="feed-section" class="hidden">
+      <h2>Newsfeed</h2>
+      <div id="feed">
+        <!-- Posts will render here -->
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
