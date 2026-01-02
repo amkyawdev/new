@@ -1,0 +1,25 @@
+{
+  "chats": [
+    {
+      "id": "1",
+      "participants": ["1", "2"],
+      "lastMessage": {
+        "sender": "1",
+        "content": "See you tomorrow!",
+        "timestamp": "2023-10-15T14:30:00Z",
+        "isRead": true
+      },
+      "unreadCount": 0
+    },
+    {
+      "id": "2",
+      "participants": ["1", "3"],
+      "lastMessage": {
+        "sender": "3",
+        "content": "Thanks for the help with the project!",
+        "timestamp": "2023-10-15T13:15:00Z",
+        "isRead": false
+      },
+      "unreadCount": 1
+    }
+  ]
