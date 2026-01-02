@@ -39,8 +39,53 @@ The website is **mobile-first and responsive**, designed to work seamlessly on b
 
 ## 🔹 Project Structure
 ```
-burmeweb.github.io/ │ ├── index.html                # Landing / Login page ├── pages/ │   ├── login.html │   ├── register.html │   ├── feed.html │   ├── chat.html │   ├── group.html │   ├── profile.html │   ├── admin.html │   └── about.html │ ├── assets/ │   ├── css/                  # Base, layout, theme, components, mobile │   ├── js/                   # App logic, auth, feed, chat, storage │   └── img/                  # Logo and icons │ ├── data/                     # JSON mock data (users, posts, chats) └── config/                   # App configuration
-Copy code
+burmeweb.github.io/
+│
+├── index.html                 # Landing / Home / Login page
+├── README.md                  # Project description, setup, screenshots
+│
+├── pages/                     # Secondary pages
+│   ├── login.html
+│   ├── register.html
+│   ├── feed.html
+│   ├── chat.html
+│   ├── group.html
+│   ├── profile.html
+│   ├── admin.html
+│   └── about.html
+│
+├── assets/                    # All static assets
+│   ├── css/
+│   │   ├── base.css           # Reset and global styles
+│   │   ├── layout.css         # Sidebar, navbar, grid
+│   │   ├── components.css     # Buttons, cards, forms
+│   │   ├── theme.css          # Colors, dark/light mode
+│   │   └── mobile.css         # Responsive media queries
+│   │
+│   ├── js/
+│   │   ├── app.js             # App initialization
+│   │   ├── auth.js            # Login/Register logic
+│   │   ├── feed.js            # Newsfeed logic
+│   │   ├── chat.js            # Personal chat logic
+│   │   ├── group.js           # Group chat logic
+│   │   ├── admin.js           # Admin panel logic
+│   │   ├── ui.js              # UI interactions / DOM updates
+│   │   └── storage.js         # LocalStorage / mock data / future API
+│   │
+│   ├── img/
+│   │   ├── logo.png
+│   │   └── icons/             # SVGs / PNGs for UI
+│   │
+│   └── fonts/                  # Custom fonts
+│
+├── data/                       # Mock / JSON data
+│   ├── users.json
+│   ├── posts.json
+│   ├── chats.json
+│   └── groups.json
+│
+└── config/
+    └── app.config.js           # App-wide constants / API keys / endpoints
 ```
 
 ## 🔹 Installation / Setup
@@ -72,7 +117,3 @@ This project is open-source and free to use.
 Copy code
 
 ---
-
-ဒီ markdown ကို GitHub repo ထဲ `README.md` အဖြစ် တင်ရုံနဲ့ professional, clear, easy-to-read readme ဖြစ်သွားပြီး visitor တွေကို တစ်ခြား developer တွေကိုလည်း လွယ်ကူစွာ နားလည်စေပါလိမ့်မယ်။  
-
-လိုရင် နောက်တစ်ဆင့်အနေနဲ့ **Screenshots + Favicon + Logo** ထည့်ပြီး အရောင် theme polish version ထပ်ပြီးရေးပေးနိုင်တယ်။
