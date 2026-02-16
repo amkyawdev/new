@@ -1,37 +1,38 @@
 <!-- components/sidebar.html -->
-<div id="sidebar" class="glass-effect">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-bold">Menu</h2>
-        <button class="mobile-menu-close md:hidden text-2xl">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-    
-    <nav class="flex flex-col gap-2">
-        <a href="/dashboard.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-glass-bg transition">
-            <i class="fas fa-home"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="/editor.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-glass-bg transition">
-            <i class="fas fa-code"></i>
-            <span>Editor</span>
-        </a>
-        <a href="/projects.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-glass-bg transition">
-            <i class="fas fa-folder"></i>
-            <span>Projects</span>
-        </a>
-        <a href="/about.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-glass-bg transition">
-            <i class="fas fa-info-circle"></i>
-            <span>About</span>
-        </a>
-        
-        <hr class="border-glass-border my-4">
-        
-        <div class="px-3">
-            <h3 class="text-sm uppercase tracking-wider text-secondary mb-2">Quick Actions</h3>
-            <button onclick="showNewProjectModal()" class="btn-primary w-full">
-                <i class="fas fa-plus mr-2"></i>New Project
+<aside id="sidebar" class="sidebar glass-effect">
+    <div class="sidebar-header">
+        <h3 class="font-semibold">EXPLORER</h3>
+        <div class="flex gap-1">
+            <button class="btn-icon" style="width: 30px; height: 30px;" id="new-file-btn" title="New File">
+                <i class="fas fa-file"></i>
+            </button>
+            <button class="btn-icon" style="width: 30px; height: 30px;" id="new-folder-btn" title="New Folder">
+                <i class="fas fa-folder"></i>
+            </button>
+            <button class="btn-icon" style="width: 30px; height: 30px;" id="refresh-files-btn" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+            <button class="btn-icon md:hidden" style="width: 30px; height: 30px;" id="close-sidebar" title="Close">
+                <i class="fas fa-times"></i>
             </button>
         </div>
-    </nav>
-</div>
+    </div>
+
+    <div class="file-tree" id="file-tree">
+        <!-- Files will be dynamically loaded -->
+        <div class="loading-files text-center py-4">
+            <i class="fas fa-spinner fa-spin text-[#4f46e5]"></i>
+            <p class="text-sm text-gray-400 mt-2">Loading files...</p>
+        </div>
+    </div>
+
+    <div class="sidebar-footer">
+        <button class="new-file-btn" id="quick-new-file">
+            <i class="fas fa-plus"></i>
+            <span>New File</span>
+        </button>
+    </div>
+</aside>
+
+<!-- Sidebar Overlay for Mobile -->
+<div id="sidebar-overlay" class="sidebar-overlay hidden"></div>
