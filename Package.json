@@ -1,0 +1,19 @@
+{
+  "name": "burme-ai",
+  "version": "1.0.0",
+  "description": "AI-Powered Code Editor",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server --port=8080",
+    "dev": "live-server --port=8080 --watch=."
+  },
+  "keywords": ["code-editor", "ai", "firebase", "gemini"],
+  "author": "Aung Myo Kyaw",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^10.8.0"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
