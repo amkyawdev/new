@@ -1,6 +1,5 @@
 // assets/js/chatbot.js
 import geminiAI from './gemini.js';
-import { APP_NAME, DEBUG } from '../../config/env.js';
 
 export function initChatbot() {
     const chatbot = document.getElementById('chatbot-container');
@@ -11,53 +10,59 @@ export function initChatbot() {
     const sendBtn = document.getElementById('chat-send');
     const toggleBtn = document.getElementById('chat-toggle');
     const closeBtn = document.getElementById('chat-close');
+    const suggestions = document.querySelectorAll('.suggestion-btn');
     
     let isOpen = false;
-    let currentContext = {};
     
-    // Initial greeting
-    addMessage(`Hello! I'm ${APP_NAME}, your coding assistant. How can I help you today?`, 'bot');
+    // Toggle chatbot
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', toggleChatbot);
+    }
     
-    // Event listeners
-    sendBtn.addEventListener('click', sendMessage);
-    input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', toggleChatbot);
+    }
     
-    toggleBtn.addEventListener('click', toggleChatbot);
-    closeBtn.addEventListener('click', toggleChatbot);
+    // Send message
+    if (sendBtn) {
+        sendBtn.addEventListener('click', sendMessage);
+    }
     
-    // Update context when file changes (for editor page)
-    if (window.editor) {
-        window.addEventListener('fileChange', (e) => {
-            currentContext = {
-                ...currentContext,
-                currentFile: {
-                    name: e.detail.filename,
-                    type: e.detail.filename.split('.').pop(),
-                    content: e.detail.content
-                }
-            };
-        });
-        
-        window.addEventListener('errorDetected', (e) => {
-            currentContext = {
-                ...currentContext,
-                error: e.detail
-            };
+    if (input) {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
         });
     }
+    
+    // Quick suggestions
+    suggestions.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const suggestion = btn.dataset.suggestion;
+            const messages = {
+                'help': 'Can you help me with my code?',
+                'code': 'Generate a simple todo app',
+                'debug': 'Help me debug this error',
+                'explain': 'Explain this code to me'
+            };
+            if (input) {
+                input.value = messages[suggestion] || '';
+                sendMessage();
+            }
+        });
+    });
     
     function toggleChatbot() {
         isOpen = !isOpen;
         chatbot.classList.toggle('open', isOpen);
         
-        if (isOpen) {
+        if (isOpen && input) {
             input.focus();
         }
     }
     
     async function sendMessage() {
+        if (!input) return;
+        
         const message = input.value.trim();
         if (!message) return;
         
@@ -69,8 +74,11 @@ export function initChatbot() {
         showTypingIndicator();
         
         try {
-            // Get AI response with context
-            const response = await geminiAI.generateResponse(message, currentContext);
+            // Get current context
+            const context = getCurrentContext();
+            
+            // Get AI response
+            const response = await geminiAI.generateResponse(message, context);
             
             // Remove typing indicator
             hideTypingIndicator();
@@ -80,27 +88,22 @@ export function initChatbot() {
                 addMessage(response.text, 'bot');
             } else {
                 addMessage(response.text, 'bot error');
-                
-                if (DEBUG) {
-                    console.warn('AI Response failed:', response.error);
-                }
             }
             
         } catch (error) {
             hideTypingIndicator();
             addMessage('Sorry, I encountered an error. Please try again.', 'bot error');
-            
-            if (DEBUG) {
-                console.error('Chat error:', error);
-            }
+            console.error('Chat error:', error);
         }
     }
     
     function addMessage(text, sender) {
+        if (!messagesContainer) return;
+        
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender} animate-slide-up`;
         
-        // Format code blocks if present
+        // Format code blocks
         const formattedText = formatMessage(text);
         
         messageDiv.innerHTML = `
@@ -117,12 +120,19 @@ export function initChatbot() {
     }
     
     function formatMessage(text) {
-        // Replace code blocks with formatted HTML
-        return text.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
+        // Replace code blocks
+        text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
             const lang = language || 'plaintext';
             return `<pre><code class="language-${lang}">${escapeHtml(code.trim())}</code></pre>`;
-        }).replace(/`([^`]+)`/g, '<code>$1</code>') // Inline code
-          .replace(/\n/g, '<br>'); // Line breaks
+        });
+        
+        // Replace inline code
+        text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+        
+        // Replace line breaks
+        text = text.replace(/\n/g, '<br>');
+        
+        return text;
     }
     
     function escapeHtml(text) {
@@ -132,6 +142,8 @@ export function initChatbot() {
     }
     
     function showTypingIndicator() {
+        if (!messagesContainer) return;
+        
         const indicator = document.createElement('div');
         indicator.id = 'typing-indicator';
         indicator.className = 'typing-indicator';
@@ -149,29 +161,20 @@ export function initChatbot() {
         if (indicator) indicator.remove();
     }
     
-    // Quick action buttons (optional)
-    function addQuickActions() {
-        const actions = [
-            { text: "Help me debug", icon: "fa-bug" },
-            { text: "Generate code", icon: "fa-code" },
-            { text: "Explain this", icon: "fa-question-circle" },
-            { text: "Best practices", icon: "fa-check-circle" }
-        ];
+    function getCurrentContext() {
+        const context = {
+            url: window.location.pathname,
+            timestamp: new Date().toISOString()
+        };
         
-        const actionsDiv = document.createElement('div');
-        actionsDiv.className = 'quick-actions flex gap-2 p-2';
-        actionsDiv.innerHTML = actions.map(action => `
-            <button class="btn-secondary text-xs px-3 py-1" onclick="setChatInput('${action.text}')">
-                <i class="fas ${action.icon} mr-1"></i>${action.text}
-            </button>
-        `).join('');
+        // Add editor context if available
+        if (window.editor && window.currentFile) {
+            context.currentFile = {
+                name: window.currentFile,
+                content: window.editor.getValue()
+            };
+        }
         
-        messagesContainer.appendChild(actionsDiv);
+        return context;
     }
-    
-    // Make setChatInput available globally
-    window.setChatInput = (text) => {
-        input.value = text;
-        input.focus();
-    };
-                }
+            }
