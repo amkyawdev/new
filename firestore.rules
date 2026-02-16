@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return request.auth.uid == 'admin-uid-here' || 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isPublic(resource) {
+      return resource.data.isPublic == true;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && request.auth.uid == userId;
+      allow delete: if isAuthenticated() && isAdmin();
+      
+      // Validate user data
+      allow write: if request.resource.data.keys().hasAll(['email', 'displayName']) &&
+                     request.resource.data.email is string &&
+                     request.resource.data.displayName is string;
+    }
+    
+    // Projects collection
+    match /projects/{projectId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || 
+         resource.data.collaborators.hasAny([request.auth.uid]) ||
+         isPublic(resource));
+      
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      allow update: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid ||
+         resource.data.collaborators.hasAny([request.auth.uid]) ||
+         isAdmin());
+      
+      allow delete: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Validate project data
+      allow write: if request.resource.data.name is string &&
+                     request.resource.data.name.size() < 100;
+    }
+    
+    // Files collection
+    match /files/{fileId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+    
+    // Settings collection
+    match /settings/{settingId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Analytics collection
+    match /analytics/{analyticId} {
+      allow read: if isAdmin();
+      allow write: if isAuthenticated();
+    }
+  }
+}
