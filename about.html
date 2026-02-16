@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Burme AI</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4f46e5;
+            --secondary: #7c3aed;
+            --dark: #0a0a1a;
+            --darker: #050510;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark), var(--darker));
+            color: white;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 3rem;
+            padding: 1rem 2rem;
+            z-index: 1000;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.2);
+        }
+
+        .hero {
+            padding-top: 120px;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .team-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a0a0c0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="flex justify-between items-center">
+            <a href="/" class="flex items-center gap-2">
+                <i class="fas fa-code text-2xl text-[#4f46e5]"></i>
+                <span class="text-2xl font-bold gradient-text">Burme AI</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-6">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/#features" class="nav-link">Features</a>
+                <a href="/#pricing" class="nav-link">Pricing</a>
+                <a href="/about.html" class="nav-link">About</a>
+                <a href="/dashboard.html" class="nav-link">Dashboard</a>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="/login.html" class="nav-link">Login</a>
+                <a href="/register.html" class="btn-primary">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6" data-aos="fade-up">
+                About
+                <span class="gradient-text">Burme AI</span>
+            </h1>
+            <p class="text-xl text-gray-400 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                We're on a mission to revolutionize coding with AI, making it accessible and enjoyable for everyone
+            </p>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="text-center" data-aos="fade-up">
+                    <div class="stat-number">10K+</div>
+                    <div class="text-gray-400">Active Users</div>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-number">50K+</div>
+                    <div class="text-gray-400">Projects</div>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-number">100+</div>
+                    <div class="text-gray-400">Countries</div>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-number">24/7</div>
+                    <div class="text-gray-400">AI Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div data-aos="fade-right">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" 
+                         alt="Team" class="rounded-3xl shadow-2xl">
+                </div>
+                <div data-aos="fade-left">
+                    <h2 class="text-3xl font-bold mb-6">Our Story</h2>
+                    <p class="text-gray-400 mb-4">
+                        Burme AI was founded in 2024 by Aung Myo Kyaw with a simple vision: to make coding more accessible and enjoyable through the power of artificial intelligence.
+                    </p>
+                    <p class="text-gray-400 mb-4">
+                        What started as a personal project quickly grew into a platform used by thousands of developers worldwide. We believe that AI shouldn't replace developers – it should empower them to create better code, faster.
+                    </p>
+                    <p class="text-gray-400">
+                        Today, Burme AI is trusted by developers from over 100 countries, helping them write cleaner code, learn faster, and build amazing things.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="glass-card p-12 text-center" data-aos="zoom-in">
+                <i class="fas fa-quote-right text-6xl text-[#4f46e5] mb-6"></i>
+                <h2 class="text-3xl font-bold mb-4">Our Mission</h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    "To democratize coding by making AI-powered development tools accessible to everyone, from beginners to experts, and to foster a community where developers can learn, share, and grow together."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12" data-aos="fade-up">
+                Meet Our
+                <span class="gradient-text">Team</span>
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Team Member 1 -->
+                <div class="glass-card text-center" data-aos="fade-up">
+                    <img src="https://ui-avatars.com/api/?name=Aung+Myo+Kyaw&size=200&background=4f46e5&color=fff" 
+                         alt="Founder" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-[#4f46e5]">
+                    <h3 class="text-xl font-bold">Aung Myo Kyaw</h3>
+                    <p class="text-[#4f46e5] mb-3">Founder & CEO</p>
+                    <p class="text-gray-400 text-sm">Full-stack developer with 10+ years of experience. Passionate about AI and education.</p>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="glass-card text-center" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://ui-avatars.com/api/?name=AI+Team&size=200&background=7c3aed&color=fff" 
+                         alt="AI Team" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-[#7c3aed]">
+                    <h3 class="text-xl font-bold">AI Development Team</h3>
+                    <p class="text-[#7c3aed] mb-3">Machine Learning Engineers</p>
+                    <p class="text-gray-400 text-sm">Specialists in NLP and large language models from top tech companies.</p>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="glass-card text-center" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://ui-avatars.com/api/?name=UX+Design&size=200&background=2563eb&color=fff" 
+                         alt="UX Team" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-[#2563eb]">
+                    <h3 class="text-xl font-bold">UX Design Team</h3>
+                    <p class="text-[#2563eb] mb-3">Product Designers</p>
+                    <p class="text-gray-400 text-sm">Creating beautiful and intuitive interfaces that developers love to use.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12" data-aos="fade-up">
+                Our
+                <span class="gradient-text">Values</span>
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center" data-aos="fade-up">
+                    <div class="w-20 h-20 bg-[#4f46e5] bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-heart text-3xl text-[#4f46e5]"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">User First</h3>
+                    <p class="text-gray-400">We build everything with our users in mind</p>
+                </div>
+
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-20 h-20 bg-[#4f46e5] bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-lightbulb text-3xl text-[#4f46e5]"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Innovation</h3>
+                    <p class="text-gray-400">Constantly pushing the boundaries of what's possible</p>
+                </div>
+
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-20 h-20 bg-[#4f46e5] bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-handshake text-3xl text-[#4f46e5]"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Community</h3>
+                    <p class="text-gray-400">Building together, growing together</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="glass-card p-12 text-center bg-gradient-to-r from-[#4f46e5] to-[#7c3aed]" data-aos="zoom-in">
+                <h2 class="text-3xl font-bold mb-4">Join Our Community</h2>
+                <p class="text-xl mb-8 max-w-2xl mx-auto">
+                    Be part of the AI coding revolution. Start your journey today.
+                </p>
+                <a href="/register.html" class="btn-primary bg-white text-[#4f46e5] hover:bg-gray-100">
+                    Get Started Free
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="text-center text-gray-400">
+                <p>&copy; 2024 Burme AI. Created by Aung Myo Kyaw.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Burme AI</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4f46e5;
+            --secondary: #7c3aed;
+            --dark: #0a0a1a;
+            --darker: #050510;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark), var(--darker));
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+            z-index: 100;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 73px;
+            left: 0;
+            bottom: 0;
+            width: 280px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: #9ca3af;
+            text-decoration: none;
+            border-radius: 1rem;
+            transition: all 0.3s;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: var(--primary);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .sidebar-link i {
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            margin-top: 73px;
+            padding: 2rem;
+        }
+
+        /* Cards */
+        .stat-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.2);
+        }
+
+        .glass-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: #9ca3af;
+            font-weight: 500;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        tr:hover td {
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid #10b981;
+        }
+
+        .badge-inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-icon:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar flex justify-between items-center">
+        <div class="flex items-center gap-4">
+            <button id="menuToggle" class="md:hidden text-2xl">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="/" class="text-2xl font-bold gradient-text">Burme AI Admin</a>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <div class="relative">
+                <button id="notificationBtn" class="btn-icon">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-xs rounded-full flex items-center justify-center">3</span>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=4f46e5&color=fff" class="w-10 h-10 rounded-full">
+                <div class="hidden md:block">
+                    <div class="font-semibold">Admin User</div>
+                    <div class="text-sm text-gray-400">admin@burmeai.com</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="space-y-1">
+            <a href="#" class="sidebar-link active">
+                <i class="fas fa-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-code"></i>
+                <span>Projects</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-database"></i>
+                <span>Database</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-chart-line"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-gear"></i>
+                <span>Settings</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-shield"></i>
+                <span>Security</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-file"></i>
+                <span>Logs</span>
+            </a>
+        </div>
+
+        <div class="absolute bottom-8 left-8 right-8">
+            <a href="/" class="sidebar-link text-red-500 hover:bg-red-500 hover:text-white">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Back to Site</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-400 text-sm">Total Users</p>
+                        <h3 class="text-3xl font-bold" id="total-users">12,345</h3>
+                        <p class="text-green-500 text-sm mt-2">
+                            <i class="fas fa-arrow-up mr-1"></i>
+                            +12% this week
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-[#4f46e5] bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-users text-[#4f46e5] text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-400 text-sm">Active Projects</p>
+                        <h3 class="text-3xl font-bold" id="total-projects">8,234</h3>
+                        <p class="text-green-500 text-sm mt-2">
+                            <i class="fas fa-arrow-up mr-1"></i>
+                            +8% this week
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-[#7c3aed] bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-code text-[#7c3aed] text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-400 text-sm">Storage Used</p>
+                        <h3 class="text-3xl font-bold" id="storage-used">245 GB</h3>
+                        <p class="text-yellow-500 text-sm mt-2">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            75% of limit
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-[#10b981] bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-database text-[#10b981] text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-400 text-sm">Revenue</p>
+                        <h3 class="text-3xl font-bold" id="revenue">$45.2K</h3>
+                        <p class="text-green-500 text-sm mt-2">
+                            <i class="fas fa-arrow-up mr-1"></i>
+                            +23% this month
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-[#f59e0b] bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-dollar-sign text-[#f59e0b] text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid lg:grid-cols-2 gap-6 mb-8">
+            <div class="glass-card">
+                <h3 class="text-lg font-bold mb-4">User Growth</h3>
+                <canvas id="userGrowthChart" height="200"></canvas>
+            </div>
+            
+            <div class="glass-card">
+                <h3 class="text-lg font-bold mb-4">Project Types</h3>
+                <canvas id="projectTypesChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Users Table -->
+        <div class="glass-card mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Recent Users</h3>
+                <button class="btn-primary px-4 py-2 text-sm">
+                    <i class="fas fa-download mr-2"></i>Export
+                </button>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Projects</th>
+                            <th>Joined</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table">
+                        <!-- Dynamic content will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- System Health -->
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="glass-card">
+                <h4 class="font-semibold mb-3">Server Status</h4>
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span>API Server: Online</span>
+                </div>
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span>Database: Online</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span>AI Service: Online</span>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h4 class="font-semibold mb-3">System Load</h4>
+                <div class="mb-2">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>CPU</span>
+                        <span>45%</span>
+                    </div>
+                    <div class="w-full h-2 bg-glass-border rounded-full overflow-hidden">
+                        <div class="h-full bg-[#4f46e5]" style="width: 45%"></div>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>Memory</span>
+                        <span>62%</span>
+                    </div>
+                    <div class="w-full h-2 bg-glass-border rounded-full overflow-hidden">
+                        <div class="h-full bg-[#7c3aed]" style="width: 62%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>Storage</span>
+                        <span>75%</span>
+                    </div>
+                    <div class="w-full h-2 bg-glass-border rounded-full overflow-hidden">
+                        <div class="h-full bg-[#f59e0b]" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h4 class="font-semibold mb-3">Quick Actions</h4>
+                <button class="w-full btn-primary mb-2">
+                    <i class="fas fa-rotate mr-2"></i>Restart Services
+                </button>
+                <button class="w-full btn-outline mb-2">
+                    <i class="fas fa-database mr-2"></i>Backup Database
+                </button>
+                <button class="w-full btn-outline">
+                    <i class="fas fa-envelope mr-2"></i>Send Newsletter
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // Sample users data
+        const users = [
+            { name: 'John Doe', email: 'john@example.com', projects: 12, joined: '2024-01-15', status: 'active' },
+            { name: 'Jane Smith', email: 'jane@example.com', projects: 8, joined: '2024-02-20', status: 'active' },
+            { name: 'Bob Johnson', email: 'bob@example.com', projects: 3, joined: '2024-03-10', status: 'inactive' },
+            { name: 'Alice Brown', email: 'alice@example.com', projects: 15, joined: '2024-01-05', status: 'active' },
+            { name: 'Charlie Wilson', email: 'charlie@example.com', projects: 5, joined: '2024-02-28', status: 'active' },
+        ];
+
+        // Populate users table
+        const usersTable = document.getElementById('users-table');
+        users.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="flex items-center gap-2">
+                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=4f46e5&color=fff" class="w-8 h-8 rounded-full">
+                    ${user.name}
+                </td>
+                <td>${user.email}</td>
+                <td>${user.projects}</td>
+                <td>${new Date(user.joined).toLocaleDateString()}</td>
+                <td>
+                    <span class="badge ${user.status === 'active' ? 'badge-active' : 'badge-inactive'}">
+                        ${user.status}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn-icon mr-1"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            usersTable.appendChild(row);
+        });
+
+        // User Growth Chart
+        const userCtx = document.getElementById('userGrowthChart').getContext('2d');
+        new Chart(userCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'New Users',
+                    data: [1200, 1900, 2300, 2800, 3400, 4100],
+                    borderColor: '#4f46e5',
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#9ca3af' }
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#9ca3af' }
+                    },
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#9ca3af' }
+                    }
+                }
+            }
+        });
+
+        // Project Types Chart
+        const projectCtx = document.getElementById('projectTypesChart').getContext('2d');
+        new Chart(projectCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Web Apps', 'Mobile Apps', 'APIs', 'Libraries', 'Other'],
+                datasets: [{
+                    data: [4500, 2300, 1800, 1200, 800],
+                    backgroundColor: ['#4f46e5', '#7c3aed', '#2563eb', '#0891b2', '#059669']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#9ca3af' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

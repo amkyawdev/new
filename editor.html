@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor - Burme AI</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="AI-Powered Code Editor by Burme AI">
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-darker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/dialog/dialog.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4f46e5;
+            --secondary: #7c3aed;
+            --dark: #0a0a1a;
+            --darker: #050510;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --editor-bg: #1e1e2e;
+            --sidebar-bg: #1a1b2f;
+            --tab-bg: #2a2b3f;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0.75rem 1.5rem;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-icon:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 64px);
+            margin-top: 64px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s;
+            position: relative;
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .sidebar.collapsed .file-item span,
+        .sidebar.collapsed .sidebar-header h3 {
+            display: none;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-tree {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 0.25rem;
+            position: relative;
+        }
+
+        .file-item:hover {
+            background: rgba(79, 70, 229, 0.2);
+        }
+
+        .file-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .file-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .file-item .file-actions {
+            position: absolute;
+            right: 0.5rem;
+            display: none;
+            gap: 0.25rem;
+        }
+
+        .file-item:hover .file-actions {
+            display: flex;
+        }
+
+        .file-actions button {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            background: var(--glass);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .file-actions button:hover {
+            background: var(--primary);
+        }
+
+        .new-file-btn {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 1rem;
+            background: var(--glass);
+            border: 1px dashed var(--glass-border);
+            border-radius: 0.5rem;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .new-file-btn:hover {
+            border-color: var(--primary);
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        /* Editor Area */
+        .editor-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--editor-bg);
+            position: relative;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            background: var(--tab-bg);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            padding: 0 0.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border-right: 1px solid var(--glass-border);
+            color: #9ca3af;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            min-width: 120px;
+            max-width: 200px;
+        }
+
+        .tab.active {
+            background: var(--editor-bg);
+            color: white;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .tab .tab-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tab .tab-close {
+            opacity: 0;
+            transition: opacity 0.3s;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab:hover .tab-close {
+            opacity: 1;
+        }
+
+        .tab .tab-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* CodeMirror */
+        .CodeMirror {
+            height: 100%;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .editor-wrapper {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            width: 400px;
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s;
+        }
+
+        .preview-panel.collapsed {
+            width: 40px;
+        }
+
+        .preview-panel.collapsed .preview-header span,
+        .preview-panel.collapsed .preview-content {
+            display: none;
+        }
+
+        .preview-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-content {
+            flex: 1;
+            padding: 1rem;
+            overflow: auto;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+            border-radius: 0.5rem;
+        }
+
+        /* AI Assistant Panel */
+        .ai-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: var(--sidebar-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(400px);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 200;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .ai-panel.open {
+            transform: translateX(0);
+        }
+
+        .ai-header {
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 1rem 1rem 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .ai-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .ai-message {
+            margin-bottom: 1rem;
+            max-width: 80%;
+        }
+
+        .ai-message.user {
+            margin-left: auto;
+        }
+
+        .ai-message.bot {
+            margin-right: auto;
+        }
+
+        .message-content {
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+        }
+
+        .ai-message.user .message-content {
+            background: var(--primary);
+        }
+
+        .ai-input {
+            padding: 1rem;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .ai-input input {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            color: white;
+        }
+
+        .ai-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .ai-input button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ai-input button:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            position: fixed;
+            bottom: 20px;
+            left: 300px;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 150;
+        }
+
+        .quick-action-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .quick-action-btn:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .quick-action-btn.run {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .quick-action-btn.save {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--glass-border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Context Menu */
+        .context-menu {
+            position: fixed;
+            background: var(--sidebar-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            display: none;
+            z-index: 1000;
+        }
+
+        .context-menu.show {
+            display: block;
+        }
+
+        .context-menu-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 0.25rem;
+            white-space: nowrap;
+        }
+
+        .context-menu-item:hover {
+            background: var(--primary);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 64px;
+                bottom: 0;
+                z-index: 150;
+                transition: left 0.3s;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .preview-panel {
+                position: fixed;
+                right: -400px;
+                top: 64px;
+                bottom: 0;
+                z-index: 150;
+                transition: right 0.3s;
+            }
+
+            .preview-panel.open {
+                right: 0;
+            }
+
+            .quick-actions {
+                left: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="flex items-center gap-4">
+            <button class="md:hidden btn-icon" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a href="/" class="flex items-center gap-2">
+                <i class="fas fa-code text-2xl text-[#4f46e5]"></i>
+                <span class="text-xl font-bold gradient-text hidden md:block">Burme AI Editor</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-2 ml-4">
+                <span class="text-sm text-gray-400">Project:</span>
+                <span id="projectName" class="font-semibold">Untitled Project</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button class="btn-icon hidden md:flex" id="toggleSidebar" title="Toggle Sidebar">
+                <i class="fas fa-folder-tree"></i>
+            </button>
+            
+            <button class="btn-icon hidden md:flex" id="togglePreview" title="Toggle Preview">
+                <i class="fas fa-eye"></i>
+            </button>
+            
+            <button class="btn-icon" id="toggleAI" title="AI Assistant">
+                <i class="fas fa-robot"></i>
+            </button>
+            
+            <button class="btn-icon" id="themeToggle" title="Toggle Theme">
+                <i class="fas fa-moon"></i>
+            </button>
+            
+            <button class="btn-primary" id="saveBtn">
+                <i class="fas fa-save"></i>
+                <span class="hidden md:inline">Save</span>
+            </button>
+            
+            <button class="btn-primary" id="runBtn" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <i class="fas fa-play"></i>
+                <span class="hidden md:inline">Run</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3 class="font-semibold">EXPLORER</h3>
+                <div class="flex gap-1">
+                    <button class="btn-icon" style="width: 30px; height: 30px;" id="newFileBtn" title="New File">
+                        <i class="fas fa-file"></i>
+                    </button>
+                    <button class="btn-icon" style="width: 30px; height: 30px;" id="newFolderBtn" title="New Folder">
+                        <i class="fas fa-folder"></i>
+                    </button>
+                    <button class="btn-icon" style="width: 30px; height: 30px;" id="refreshFilesBtn" title="Refresh">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="file-tree" id="fileTree">
+                <!-- Files will be loaded here -->
+                <div class="file-item active" data-file="index.html">
+                    <i class="fab fa-html5"></i>
+                    <span>index.html</span>
+                    <div class="file-actions">
+                        <button onclick="event.stopPropagation(); renameFile('index.html')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="event.stopPropagation(); deleteFile('index.html')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="file-item" data-file="style.css">
+                    <i class="fab fa-css3-alt"></i>
+                    <span>style.css</span>
+                    <div class="file-actions">
+                        <button onclick="event.stopPropagation(); renameFile('style.css')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="event.stopPropagation(); deleteFile('style.css')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="file-item" data-file="script.js">
+                    <i class="fab fa-js"></i>
+                    <span>script.js</span>
+                    <div class="file-actions">
+                        <button onclick="event.stopPropagation(); renameFile('script.js')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="event.stopPropagation(); deleteFile('script.js')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="new-file-btn" id="quickNewFile">
+                <i class="fas fa-plus"></i>
+                <span>New File</span>
+            </button>
+        </aside>
+
+        <!-- Editor Area -->
+        <div class="editor-area">
+            <!-- Tabs -->
+            <div class="tabs-container" id="tabsContainer">
+                <div class="tab active" data-file="index.html">
+                    <i class="fab fa-html5"></i>
+                    <span class="tab-name">index.html</span>
+                    <button class="tab-close" onclick="closeFile('index.html')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="tab" data-file="style.css">
+                    <i class="fab fa-css3-alt"></i>
+                    <span class="tab-name">style.css</span>
+                    <button class="tab-close" onclick="closeFile('style.css')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="tab" data-file="script.js">
+                    <i class="fab fa-js"></i>
+                    <span class="tab-name">script.js</span>
+                    <button class="tab-close" onclick="closeFile('script.js')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Editor -->
+            <div class="editor-wrapper">
+                <textarea id="code-editor"></textarea>
+            </div>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="preview-panel" id="previewPanel">
+            <div class="preview-header">
+                <span class="font-semibold">PREVIEW</span>
+                <button class="btn-icon" style="width: 30px; height: 30px;" id="closePreview">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="preview-content">
+                <iframe id="preview-frame" class="preview-frame" title="Preview"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant Panel -->
+    <div class="ai-panel" id="aiPanel">
+        <div class="ai-header" id="aiHeader">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-robot"></i>
+                <span class="font-bold">Burme AI Assistant</span>
+            </div>
+            <button id="closeAI">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="ai-messages" id="aiMessages">
+            <div class="ai-message bot">
+                <div class="message-content">
+                    Hello! I'm your AI assistant. How can I help you with your code today?
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-input">
+            <input type="text" id="aiInput" placeholder="Ask me anything..." autocomplete="off">
+            <button id="aiSend">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button class="quick-action-btn run" id="quickRun" title="Run Code (Ctrl+Enter)">
+            <i class="fas fa-play"></i>
+        </button>
+        <button class="quick-action-btn save" id="quickSave" title="Save (Ctrl+S)">
+            <i class="fas fa-save"></i>
+        </button>
+        <button class="quick-action-btn" id="quickFormat" title="Format Code (Shift+Alt+F)">
+            <i class="fas fa-code"></i>
+        </button>
+        <button class="quick-action-btn" id="quickDownload" title="Download">
+            <i class="fas fa-download"></i>
+        </button>
+        <button class="quick-action-btn" id="quickSettings" title="Settings">
+            <i class="fas fa-cog"></i>
+        </button>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" onclick="contextAction('open')">
+            <i class="fas fa-folder-open mr-2"></i>Open
+        </div>
+        <div class="context-menu-item" onclick="contextAction('rename')">
+            <i class="fas fa-edit mr-2"></i>Rename
+        </div>
+        <div class="context-menu-item" onclick="contextAction('delete')">
+            <i class="fas fa-trash mr-2"></i>Delete
+        </div>
+        <hr class="border-gray-700 my-1">
+        <div class="context-menu-item" onclick="contextAction('duplicate')">
+            <i class="fas fa-copy mr-2"></i>Duplicate
+        </div>
+        <div class="context-menu-item" onclick="contextAction('download')">
+            <i class="fas fa-download mr-2"></i>Download
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/html-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/css-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/javascript-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/selection/active-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/search/search.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/search/searchcursor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/dialog/dialog.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/comment/comment.min.js"></script>
+
+    <script>
+        // Initialize CodeMirror
+        const editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+            lineNumbers: true,
+            mode: 'htmlmixed',
+            theme: 'material-darker',
+            autoCloseTags: true,
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            indentUnit: 4,
+            tabSize: 4,
+            lineWrapping: true,
+            styleActiveLine: true,
+            extraKeys: {
+                'Ctrl-Space': 'autocomplete',
+                'Ctrl-/': 'toggleComment',
+                'Ctrl-D': 'deleteLine',
+                'Ctrl-Enter': function() { runCode(); },
+                'Ctrl-S': function() { saveProject(); },
+                'Shift-Alt-F': function() { formatCode(); }
+            }
+        });
+
+        // Editor content
+        editor.setValue(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Project</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Hello, Burme AI! 👋</h1>
+    <p>Start coding your amazing project...</p>
+    
+    <script src="script.js"><\/script>
+</body>
+</html>`);
+
+        // State management
+        let currentFile = 'index.html';
+        let projectId = new URLSearchParams(window.location.search).get('id') || 'new';
+        let isAIOpen = false;
+        let isSidebarCollapsed = false;
+        let isPreviewCollapsed = false;
+        let files = {
+            'index.html': editor.getValue(),
+            'style.css': `/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 1s ease;
+}
+
+p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}`,
+            'script.js': `// Welcome to Burme AI!
+console.log('Hello, World!');
+
+// Your code here
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Page loaded!');
+    
+    // Add interactive features
+    const h1 = document.querySelector('h1');
+    h1.addEventListener('click', () => {
+        h1.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            h1.style.transform = 'scale(1)';
+        }, 200);
+    });
+});`
+        };
+
+        // Update project name from URL
+        if (projectId !== 'new') {
+            document.getElementById('projectName').textContent = `Project ${projectId}`;
+        }
+
+        // File switching
+        function switchFile(filename) {
+            currentFile = filename;
+            
+            // Update active states
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.file === filename);
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.file === filename);
+            });
+            
+            // Update editor mode
+            const ext = filename.split('.').pop();
+            const modes = {
+                'html': 'htmlmixed',
+                'css': 'css',
+                'js': 'javascript',
+                'json': 'application/json',
+                'md': 'markdown'
+            };
+            editor.setOption('mode', modes[ext] || 'htmlmixed');
+            
+            // Load file content
+            if (files[filename]) {
+                editor.setValue(files[filename]);
+            }
+        }
+
+        // Run code (preview)
+        function runCode() {
+            const loading = document.getElementById('loadingOverlay');
+            loading.classList.add('show');
+            
+            // Save current file
+            files[currentFile] = editor.getValue();
+            
+            // Generate preview HTML
+            const html = files['index.html'] || '';
+            const css = files['style.css'] || '';
+            const js = files['script.js'] || '';
+            
+            const previewContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>${css}</style>
+                </head>
+                <body>
+                    ${html}
+                    <script>${js}<\/script>
+                </body>
+                </html>
+            `;
+            
+            const previewFrame = document.getElementById('preview-frame');
+            previewFrame.srcdoc = previewContent;
+            
+            setTimeout(() => {
+                loading.classList.remove('show');
+            }, 500);
+        }
+
+        // Save project
+        function saveProject() {
+            files[currentFile] = editor.getValue();
+            
+            // Show saved indicator
+            const saveBtn = document.getElementById('saveBtn');
+            const originalHtml = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<i class="fas fa-check"></i><span class="hidden md:inline">Saved</span>';
+            
+            setTimeout(() => {
+                saveBtn.innerHTML = originalHtml;
+            }, 2000);
+            
+            // Demo: Save to localStorage
+            localStorage.setItem(`project_${projectId}`, JSON.stringify(files));
+        }
+
+        // Format code
+        function formatCode() {
+            const code = editor.getValue();
+            // Simple formatting (you can integrate prettier here)
+            editor.setValue(code.replace(/\s+/g, ' ').replace(/\s*{\s*/g, ' {\n    ').replace(/\s*}\s*/g, '\n}\n'));
+        }
+
+        // AI Assistant functions
+        const aiPanel = document.getElementById('aiPanel');
+        const aiMessages = document.getElementById('aiMessages');
+        const aiInput = document.getElementById('aiInput');
+        
+        document.getElementById('toggleAI').addEventListener('click', () => {
+            isAIOpen = !isAIOpen;
+            aiPanel.classList.toggle('open', isAIOpen);
+        });
+        
+        document.getElementById('closeAI').addEventListener('click', () => {
+            isAIOpen = false;
+            aiPanel.classList.remove('open');
+        });
+        
+        document.getElementById('aiSend').addEventListener('click', sendAIMessage);
+        aiInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendAIMessage();
+        });
+
+        function sendAIMessage() {
+            const message = aiInput.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            addAIMessage(message, 'user');
+            aiInput.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const responses = {
+                    'hello': 'Hello! How can I help you with your code today?',
+                    'help': 'I can help you write code, debug errors, explain concepts, and more!',
+                    'code': 'What kind of code would you like me to generate?',
+                    'error': 'Please share the error message and I\'ll help you fix it.',
+                    'default': 'I understand. Let me help you with that. Could you provide more details?'
+                };
+                
+                const lowerMessage = message.toLowerCase();
+                let response = responses.default;
+                
+                for (const [key, value] of Object.entries(responses)) {
+                    if (lowerMessage.includes(key)) {
+                        response = value;
+                        break;
+                    }
+                }
+                
+                addAIMessage(response, 'bot');
+            }, 1000);
+        }
+
+        function addAIMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `ai-message ${sender}`;
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${text}
+                </div>
+            `;
+            aiMessages.appendChild(messageDiv);
+            aiMessages.scrollTop = aiMessages.scrollHeight;
+        }
+
+        // Tab management
+        function closeFile(filename) {
+            // Don't close if it's the only file
+            const tabs = document.querySelectorAll('.tab');
+            if (tabs.length <= 1) return;
+            
+            const tab = document.querySelector(`.tab[data-file="${filename}"]`);
+            if (tab) tab.remove();
+            
+            // Switch to another file
+            if (currentFile === filename) {
+                const firstTab = document.querySelector('.tab');
+                if (firstTab) {
+                    switchFile(firstTab.dataset.file);
+                }
+            }
+        }
+
+        // Context menu
+        const contextMenu = document.getElementById('contextMenu');
+        
+        document.addEventListener('contextmenu', (e) => {
+            const fileItem = e.target.closest('.file-item');
+            if (fileItem) {
+                e.preventDefault();
+                contextMenu.style.left = e.pageX + 'px';
+                contextMenu.style.top = e.pageY + 'px';
+                contextMenu.classList.add('show');
+            }
+        });
+        
+        document.addEventListener('click', () => {
+            contextMenu.classList.remove('show');
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveProject();
+            }
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                runCode();
+            }
+            if (e.shiftKey && e.altKey && e.key === 'F') {
+                e.preventDefault();
+                formatCode();
+            }
+        });
+
+        // Theme toggle
+        let isDarkMode = true;
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            editor.setOption('theme', isDarkMode ? 'material-darker' : 'dracula');
+            document.getElementById('themeToggle').innerHTML = `<i class="fas fa-${isDarkMode ? 'moon' : 'sun'}"></i>`;
+        });
+
+        // Sidebar collapse
+        document.getElementById('toggleSidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        });
+
+        // Preview toggle
+        document.getElementById('togglePreview').addEventListener('click', () => {
+            document.getElementById('previewPanel').classList.toggle('collapsed');
+        });
+
+        document.getElementById('closePreview').addEventListener('click', () => {
+            document.getElementById('previewPanel').classList.add('collapsed');
+        });
+
+        // Mobile menu
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // File operations
+        document.getElementById('newFileBtn').addEventListener('click', () => {
+            const filename = prompt('Enter file name (e.g., app.js):', 'newfile.js');
+            if (filename) {
+                // Add to file tree
+                const ext = filename.split('.').pop();
+                const icons = {
+                    'html': 'fab fa-html5',
+                    'css': 'fab fa-css3-alt',
+                    'js': 'fab fa-js',
+                    'json': 'fas fa-file-code',
+                    'md': 'fas fa-markdown'
+                };
+                
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.dataset.file = filename;
+                fileItem.innerHTML = `
+                    <i class="${icons[ext] || 'fas fa-file'}"></i>
+                    <span>${filename}</span>
+                    <div class="file-actions">
+                        <button onclick="event.stopPropagation(); renameFile('${filename}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="event.stopPropagation(); deleteFile('${filename}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('fileTree').appendChild(fileItem);
+                
+                // Add to tabs
+                const tab = document.createElement('div');
+                tab.className = 'tab';
+                tab.dataset.file = filename;
+                tab.innerHTML = `
+                    <i class="${icons[ext] || 'fas fa-file'}"></i>
+                    <span class="tab-name">${filename}</span>
+                    <button class="tab-close" onclick="closeFile('${filename}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                document.getElementById('tabsContainer').appendChild(tab);
+                
+                // Initialize file content
+                files[filename] = '';
+                
+                // Switch to new file
+                switchFile(filename);
+            }
+        });
+
+        // Run button
+        document.getElementById('runBtn').addEventListener('click', runCode);
+        document.getElementById('quickRun').addEventListener('click', runCode);
+        
+        // Save button
+        document.getElementById('saveBtn').addEventListener('click', saveProject);
+        document.getElementById('quickSave').addEventListener('click', saveProject);
+        
+        // Format button
+        document.getElementById('quickFormat').addEventListener('click', formatCode);
+
+        // Download button
+        document.getElementById('quickDownload').addEventListener('click', () => {
+            saveProject();
+            
+            // Create download link
+            const data = JSON.stringify(files, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `project-${projectId}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // File click handlers
+        document.querySelectorAll('.file-item').forEach(item => {
+            item.addEventListener('click', () => {
+                switchFile(item.dataset.file);
+            });
+        });
+
+        // Tab click handlers
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                if (!e.target.closest('.tab-close')) {
+                    switchFile(tab.dataset.file);
+                }
+            });
+        });
+
+        // Auto-save every 30 seconds
+        setInterval(saveProject, 30000);
+
+        // Load project from URL if exists
+        const savedProject = localStorage.getItem(`project_${projectId}`);
+        if (savedProject) {
+            try {
+                files = JSON.parse(savedProject);
+                switchFile(currentFile);
+            } catch (e) {
+                console.error('Failed to load project:', e);
+            }
+        }
+
+        // Welcome message from AI
+        setTimeout(() => {
+            addAIMessage("I'm here to help! You can ask me to generate code, explain concepts, or debug issues.", 'bot');
+        }, 2000);
+
+        // Quick action tooltips
+        document.querySelectorAll('.quick-action-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', (e) => {
+                // Could add tooltips here
+            });
+        });
+
+        console.log('Burme AI Editor initialized successfully! 🚀');
+    </script>
+</body>
+</html>
