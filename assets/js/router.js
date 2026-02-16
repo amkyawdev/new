@@ -5,7 +5,18 @@ export function initRouter() {
         const link = e.target.closest('a[data-nav]');
         if (link) {
             e.preventDefault();
-            navigateTo(link.href);
+            const href = link.getAttribute('href');
+            
+            // Don't handle anchor links
+            if (href.startsWith('#')) {
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+                return;
+            }
+            
+            navigateTo(href);
         }
     });
     
@@ -13,18 +24,29 @@ export function initRouter() {
     window.addEventListener('popstate', () => {
         loadPage(window.location.pathname);
     });
+    
+    // Handle mobile menu links
+    document.querySelectorAll('.mobile-link').forEach(link => {
+        link.addEventListener('click', () => {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+    });
 }
 
-function navigateTo(url) {
+export function navigateTo(url) {
     // Page transition
     document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.3s ease';
     
     setTimeout(() => {
         window.location.href = url;
     }, 300);
 }
 
-function loadPage(path) {
-    // Implement SPA-like navigation if needed
+export function loadPage(path) {
+    // For SPA navigation if needed
     console.log('Loading page:', path);
 }
