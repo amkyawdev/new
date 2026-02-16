@@ -1,288 +1,444 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BurmeWeb - Myanmar Social Network</title>
-    
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="assets/css/base.css">
-    <link rel="stylesheet" href="assets/css/layout.css">
-    <link rel="stylesheet" href="assets/css/components.css">
-    <link rel="stylesheet" href="assets/css/theme.css">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/img/logo.png">
-    
-    <!-- Meta Tags -->
-    <meta name="description" content="BurmeWeb - Myanmar's premier social networking platform with chat, groups, and community features">
-    <meta name="keywords" content="Myanmar, Social Network, Chat, Groups, Community">
-    <meta name="author" content="BurmeWeb Team">
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-brand">
-                <a href="/" class="logo">
-                    <img src="assets/img/logo.png" alt="BurmeWeb Logo">
-                    <span>BurmeWeb</span>
-                </a>
-            </div>
+    <title>Burme AI - Next Generation Code Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #14142b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0c0;
+            --accent-primary: #4f46e5;
+            --accent-secondary: #7c3aed;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --glass-bg: rgba(0, 0, 0, 0.03);
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+        
+        .glass-effect {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 0.5s ease forwards;
+        }
+        
+        .animate-slide-down {
+            animation: slideDown 0.3s ease forwards;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Device Frame */
+        .device-frame {
+            position: relative;
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--glass-border);
+        }
+        
+        .device-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        
+        .device-frame::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        
+        /* Project Card */
+        .project-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--accent-primary);
+            box-shadow: 0 20px 30px rgba(79, 70, 229, 0.2);
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            min-width: 300px;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .notification.success {
+            border-left: 4px solid #10b981;
+        }
+        
+        .notification.error {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .notification.warning {
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .notification.info {
+            border-left: 4px solid #3b82f6;
+        }
+        
+        /* Chatbot */
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        #chatbot-container.open {
+            transform: translateX(0);
+        }
+        
+        .chat-header {
+            padding: 1rem;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        .message {
+            margin-bottom: 1rem;
+        }
+        
+        .message-content {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+        
+        .message.user .message-content {
+            flex-direction: row-reverse;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .message.user .avatar {
+            background: var(--accent-primary);
+        }
+        
+        .text {
+            max-width: 70%;
+            padding: 0.75rem;
+            border-radius: 1rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .message.user .text {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        .chat-input {
+            padding: 1rem;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+        }
+        
+        .chat-input button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .chat-input button:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 0.3rem;
+            padding: 0.75rem;
+            background: var(--glass-bg);
+            border-radius: 1rem;
+            width: fit-content;
+            margin-bottom: 1rem;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            animation: typing 1.4s infinite;
+        }
+        
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Mobile Menu */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
             
-            <div class="navbar-menu">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#about" class="nav-link">About</a>
-                <a href="pages/login.html" class="nav-link">Login</a>
-                <a href="pages/register.html" class="btn btn-primary">Sign Up</a>
-                
-                <!-- Theme Toggle -->
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                    <span class="sun-icon">☀️</span>
-                    <span class="moon-icon">🌙</span>
+            #sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                bottom: 0;
+                width: 80%;
+                background: var(--bg-secondary);
+                transition: left 0.3s ease;
+                z-index: 100;
+                padding: 2rem;
+            }
+            
+            #sidebar.open {
+                left: 0;
+            }
+            
+            .project-card {
+                margin: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="navbar"></div>
+    <div id="sidebar"></div>
+    
+    <main class="container mx-auto px-4 py-8">
+        <div class="text-center mb-12 animate-slide-down">
+            <h1 class="text-6xl font-bold mb-4">
+                <span class="gradient-text">Burme AI</span>
+            </h1>
+            <p class="text-xl text-secondary mb-8">Next Generation AI-Powered Code Editor</p>
+            
+            <div class="flex justify-center gap-4">
+                <button class="btn-primary" onclick="window.location.href='/register.html'">
+                    <i class="fas fa-rocket mr-2"></i>Get Started
+                </button>
+                <button class="btn-secondary" onclick="window.location.href='/about.html'">
+                    <i class="fas fa-play mr-2"></i>Watch Demo
                 </button>
             </div>
-            
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle" id="mobileMenuToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
         </div>
         
-        <!-- Mobile Menu -->
-        <div class="mobile-menu" id="mobileMenu">
-            <a href="#features" class="mobile-nav-link">Features</a>
-            <a href="#about" class="mobile-nav-link">About</a>
-            <a href="pages/login.html" class="mobile-nav-link">Login</a>
-            <a href="pages/register.html" class="mobile-nav-link btn btn-primary">Sign Up</a>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">Connect with Myanmar</h1>
-                <p class="hero-subtitle">Join thousands of users in Myanmar's most vibrant social network. Share, chat, and connect with your community.</p>
-                
-                <div class="hero-actions">
-                    <a href="pages/register.html" class="btn btn-primary btn-large">Get Started Free</a>
-                    <a href="#features" class="btn btn-secondary btn-large">Learn More</a>
-                </div>
-                
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="stat-number">10,000+</span>
-                        <span class="stat-label">Active Users</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">50,000+</span>
-                        <span class="stat-label">Messages Daily</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">1,000+</span>
-                        <span class="stat-label">Groups</span>
-                    </div>
-                </div>
+        <div class="grid md:grid-cols-3 gap-6 mt-16">
+            <div class="glass-effect p-6 text-center animate-slide-up" style="animation-delay: 0.1s">
+                <i class="fas fa-robot text-4xl text-accent-primary mb-4"></i>
+                <h3 class="text-xl font-bold mb-2">AI-Powered</h3>
+                <p class="text-secondary">Built with Gemini AI for intelligent code assistance</p>
             </div>
             
-            <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1611605698335-8b1569810432?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="People connecting online" loading="lazy">
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features-section" id="features">
-        <div class="container">
-            <h2 class="section-title">Why Choose BurmeWeb?</h2>
-            <p class="section-subtitle">Designed specifically for Myanmar users with features you'll love</p>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">💬</div>
-                    <h3 class="feature-title">Real-time Chat</h3>
-                    <p class="feature-description">Instant messaging with friends and family. Supports text, images, and voice messages.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">👥</div>
-                    <h3 class="feature-title">Groups & Communities</h3>
-                    <p class="feature-description">Create or join groups based on interests, location, or communities.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📰</div>
-                    <h3 class="feature-title">News Feed</h3>
-                    <p class="feature-description">Stay updated with posts from friends and communities you follow.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3 class="feature-title">Privacy First</h3>
-                    <p class="feature-description">Your data is secure with end-to-end encryption and privacy controls.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🌐</div>
-                    <h3 class="feature-title">Myanmar Language</h3>
-                    <p class="feature-description">Full support for Myanmar language and Unicode fonts.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3 class="feature-title">Mobile Friendly</h3>
-                    <p class="feature-description">Works perfectly on all devices - phones, tablets, and computers.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="about-section" id="about">
-        <div class="container">
-            <h2 class="section-title">About BurmeWeb</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>BurmeWeb is a social networking platform created specifically for the people of Myanmar. Our mission is to provide a safe, accessible, and feature-rich platform for connecting communities across the country.</p>
-                    
-                    <p>Built with modern web technologies and Firebase backend, BurmeWeb offers real-time communication, secure data storage, and an intuitive user interface that works across all devices.</p>
-                    
-                    <div class="about-features">
-                        <h4>Key Technologies:</h4>
-                        <ul>
-                            <li>Firebase Authentication & Database</li>
-                            <li>Real-time WebSockets for instant messaging</li>
-                            <li>Progressive Web App (PWA) capabilities</li>
-                            <li>Responsive design for all screen sizes</li>
-                            <li>Myanmar Unicode font support</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Technology and connectivity" loading="lazy">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <h2 class="cta-title">Ready to join our community?</h2>
-            <p class="cta-subtitle">Create your free account today and start connecting!</p>
-            <a href="pages/register.html" class="btn btn-primary btn-xlarge">Sign Up Now</a>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <a href="/" class="logo">
-                        <img src="assets/img/logo.png" alt="BurmeWeb Logo">
-                        <span>BurmeWeb</span>
-                    </a>
-                    <p class="footer-description">Connecting Myanmar, one conversation at a time.</p>
-                </div>
-                
-                <div class="footer-links">
-                    <div class="link-group">
-                        <h4>Product</h4>
-                        <a href="pages/feed.html">Feed</a>
-                        <a href="pages/chat.html">Chat</a>
-                        <a href="pages/group.html">Groups</a>
-                        <a href="pages/profile.html">Profile</a>
-                    </div>
-                    
-                    <div class="link-group">
-                        <h4>Company</h4>
-                        <a href="pages/about.html">About</a>
-                        <a href="#">Blog</a>
-                        <a href="#">Careers</a>
-                        <a href="#">Press</a>
-                    </div>
-                    
-                    <div class="link-group">
-                        <h4>Support</h4>
-                        <a href="#">Help Center</a>
-                        <a href="#">Safety</a>
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
-                    </div>
-                    
-                    <div class="link-group">
-                        <h4>Connect</h4>
-                        <a href="#">Facebook</a>
-                        <a href="#">Twitter</a>
-                        <a href="#">Instagram</a>
-                        <a href="#">LinkedIn</a>
-                    </div>
-                </div>
+            <div class="glass-effect p-6 text-center animate-slide-up" style="animation-delay: 0.2s">
+                <i class="fas fa-code text-4xl text-accent-primary mb-4"></i>
+                <h3 class="text-xl font-bold mb-2">Multi-Language</h3>
+                <p class="text-secondary">Support for HTML, CSS, JavaScript, and more</p>
             </div>
             
-            <div class="footer-bottom">
-                <p>&copy; 2023 BurmeWeb. All rights reserved.</p>
-                <div class="footer-locale">
-                    <select id="languageSelect" class="locale-select">
-                        <option value="en">English</option>
-                        <option value="my" selected>မြန်မာ</option>
-                    </select>
-                </div>
+            <div class="glass-effect p-6 text-center animate-slide-up" style="animation-delay: 0.3s">
+                <i class="fas fa-cloud text-4xl text-accent-primary mb-4"></i>
+                <h3 class="text-xl font-bold mb-2">Cloud Sync</h3>
+                <p class="text-secondary">Your projects saved securely in the cloud</p>
             </div>
         </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-    <script src="config/app.config.js"></script>
-    <script src="assets/js/app.js"></script>
-    <script src="assets/js/ui.js"></script>
+        
+        <div class="device-frame mt-16 animate-fade-in">
+            <div id="three-container" style="height: 500px;"></div>
+        </div>
+    </main>
     
-    <script>
-        // Initialize theme
-        document.addEventListener('DOMContentLoaded', function() {
-            const themeToggle = document.getElementById('themeToggle');
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileMenu = document.getElementById('mobileMenu');
-            const languageSelect = document.getElementById('languageSelect');
-            
-            // Theme toggle
-            themeToggle.addEventListener('click', function() {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('burmeweb-theme', newTheme);
-            });
-            
-            // Mobile menu toggle
-            mobileMenuToggle.addEventListener('click', function() {
-                mobileMenu.classList.toggle('active');
-                mobileMenuToggle.classList.toggle('active');
-            });
-            
-            // Language select
-            languageSelect.addEventListener('change', function() {
-                // In a real app, this would change the language
-                console.log('Language changed to:', this.value);
-                // You would implement i18n here
-            });
-            
-            // Load saved theme
-            const savedTheme = localStorage.getItem('burmeweb-theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        });
+    <div id="chatbot"></div>
+    
+    <script type="module" src="/assets/js/app.js"></script>
+    <script type="module">
+        import { initThreeScene } from '/assets/three/scene.js';
+        
+        if (document.getElementById('three-container')) {
+            initThreeScene('three-container');
+        }
     </script>
 </body>
-                      </html>
+</html>
