@@ -1,0 +1,50 @@
+<!-- components/navbar.html -->
+<nav class="glass-effect fixed top-0 left-0 right-0 z-50 px-4 py-3">
+    <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-8">
+            <a href="/" class="text-2xl font-bold gradient-text">Burme AI</a>
+            
+            <div class="hidden md:flex gap-6">
+                <a href="/dashboard.html" class="hover:text-accent-primary transition">Dashboard</a>
+                <a href="/editor.html" class="hover:text-accent-primary transition">Editor</a>
+                <a href="/about.html" class="hover:text-accent-primary transition">About</a>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <button id="theme-toggle" class="text-xl">
+                <i class="fas fa-moon"></i>
+            </button>
+            
+            <button id="chat-toggle" class="text-xl">
+                <i class="fas fa-robot"></i>
+            </button>
+            
+            <div class="guest-only">
+                <button id="google-signin" class="btn-primary text-sm px-4 py-2">
+                    Sign In
+                </button>
+            </div>
+            
+            <div class="auth-required hidden relative">
+                <button id="user-menu-btn" class="flex items-center gap-2">
+                    <img id="user-avatar" src="" alt="User" class="w-8 h-8 rounded-full">
+                    <span id="user-name"></span>
+                </button>
+                
+                <div id="user-menu" class="absolute right-0 mt-2 w-48 glass-effect p-2 hidden">
+                    <a href="/dashboard.html" class="block p-2 hover:bg-glass-bg rounded">Dashboard</a>
+                    <a href="/profile.html" class="block p-2 hover:bg-glass-bg rounded">Profile</a>
+                    <hr class="border-glass-border my-2">
+                    <button id="signout" class="block w-full text-left p-2 hover:bg-glass-bg rounded text-red-500">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+            
+            <button class="mobile-menu-toggle md:hidden text-2xl">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>
