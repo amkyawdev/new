@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Burme AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="glass-effect p-8 w-full max-w-md animate-slide-down">
+        <div class="text-center mb-8">
+            <i class="fas fa-code text-5xl text-accent-primary mb-4"></i>
+            <h2 class="text-3xl font-bold gradient-text">Welcome Back</h2>
+            <p class="text-secondary mt-2">Sign in to continue to Burme AI</p>
+        </div>
+        
+        <div class="space-y-4">
+            <button id="google-signin" class="btn-secondary w-full flex items-center justify-center gap-3">
+                <i class="fab fa-google"></i>
+                Continue with Google
+            </button>
+            
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-glass-border"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-primary text-secondary">Or continue with email</span>
+                </div>
+            </div>
+            
+            <form class="space-y-4">
+                <input type="email" placeholder="Email" class="w-full p-3 rounded-lg bg-glass-bg border border-glass-border text-primary">
+                <input type="password" placeholder="Password" class="w-full p-3 rounded-lg bg-glass-bg border border-glass-border text-primary">
+                
+                <div class="flex justify-between text-sm">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" class="form-checkbox">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="/reset-password.html" class="text-accent-primary hover:underline">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="btn-primary w-full">Sign In</button>
+            </form>
+        </div>
+        
+        <p class="text-center mt-6 text-secondary">
+            Don't have an account? 
+            <a href="/register.html" class="text-accent-primary hover:underline">Sign up</a>
+        </p>
+    </div>
+    
+    <script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>
