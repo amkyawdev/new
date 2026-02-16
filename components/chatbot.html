@@ -1,21 +1,41 @@
 <!-- components/chatbot.html -->
-<div id="chatbot-container">
-    <div class="chat-header">
+<div id="chatbot-container" class="chatbot-container">
+    <div class="chat-header" id="chat-header">
         <div class="flex items-center gap-2">
             <i class="fas fa-robot"></i>
             <span class="font-bold">Burme AI Assistant</span>
         </div>
-        <button id="chat-close">
+        <button id="chat-close" class="text-white hover:text-gray-300">
             <i class="fas fa-times"></i>
         </button>
     </div>
-    
-    <div id="chat-messages" class="chat-messages"></div>
-    
-    <div class="chat-input">
-        <input type="text" id="chat-input" placeholder="Ask me anything...">
+
+    <div class="chat-messages" id="chat-messages">
+        <!-- Welcome message -->
+        <div class="message bot">
+            <div class="message-content">
+                <div class="avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="text">
+                    Hello! I'm Burme AI, your coding assistant. How can I help you today?
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Ask me anything..." autocomplete="off">
         <button id="chat-send">
             <i class="fas fa-paper-plane"></i>
         </button>
+    </div>
+
+    <!-- Quick suggestions -->
+    <div class="chat-suggestions" id="chat-suggestions">
+        <button class="suggestion-btn" data-suggestion="help">Need help?</button>
+        <button class="suggestion-btn" data-suggestion="code">Generate code</button>
+        <button class="suggestion-btn" data-suggestion="debug">Debug</button>
+        <button class="suggestion-btn" data-suggestion="explain">Explain</button>
     </div>
 </div>
