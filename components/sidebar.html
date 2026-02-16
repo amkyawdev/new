@@ -1,0 +1,37 @@
+<!-- components/sidebar.html -->
+<div id="sidebar" class="glass-effect">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold">Menu</h2>
+        <button class="mobile-menu-close md:hidden text-2xl">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <nav class="flex flex-col gap-2">
+        <a href="/dashboard.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-glass-bg transition">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="/editor.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-glass-bg transition">
+            <i class="fas fa-code"></i>
+            <span>Editor</span>
+        </a>
+        <a href="/projects.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-glass-bg transition">
+            <i class="fas fa-folder"></i>
+            <span>Projects</span>
+        </a>
+        <a href="/about.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-glass-bg transition">
+            <i class="fas fa-info-circle"></i>
+            <span>About</span>
+        </a>
+        
+        <hr class="border-glass-border my-4">
+        
+        <div class="px-3">
+            <h3 class="text-sm uppercase tracking-wider text-secondary mb-2">Quick Actions</h3>
+            <button onclick="showNewProjectModal()" class="btn-primary w-full">
+                <i class="fas fa-plus mr-2"></i>New Project
+            </button>
+        </div>
+    </nav>
+</div>
